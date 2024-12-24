@@ -1,0 +1,69 @@
+﻿@model WebApp1.Models.InvoiceDetail
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h4>Thêm sản phẩm vào hóa đơn</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="InvoiceId" />
+            <div class="form-group">
+                <label asp-for="ProductId" class="control-label">Sản phẩm</label>
+                <select id="productSelect" asp-for="ProductId" class="form-control" asp-items="ViewBag.ProductId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Quantity" class="control-label">Số lượng</label>
+                <input id="quantity" asp-for="Quantity" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TotalPrice" class="control-label">Thành tiền</label>
+                <input id="totalPrice" asp-for="TotalPrice" class="form-control" readonly/>
+            </div>
+            <div class="form-group">
+                <input id="submit" type="submit" value="Thêm" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="Invoices" asp-action="Details" asp-route-id="@ViewBag.InvoiceId">Quay về</a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function calculateTotalPrice() {
+        var productId = $("#productSelect").val();
+        var quantity = $("#quantity").val();
+
+        if (productId && quantity > 0) {
+            $.ajax({
+                url: `/Products/GetProductPrice/${productId}`,
+                type: "GET",
+                success: function (response) {
+                    var price = response;
+                    var total = price * quantity;
+                    $("#totalPrice").val(total.toFixed(2));
+                },
+                error: function () {
+                    alert("Failed to fetch product price.");
+                }
+            });
+        } else {
+            $("#totalPrice").val("");
+        }
+    }
+    $("#productSelect, #quantity").on("change", calculateTotalPrice);
+    $("quantity").on("input", calculateTotalPrice);
+    $("#submit").on("click", calculateTotalPrice);
+
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

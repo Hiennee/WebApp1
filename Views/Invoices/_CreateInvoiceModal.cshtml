@@ -1,0 +1,111 @@
+﻿@model IEnumerable<WebApp1.Models.Invoice>
+@{
+    var invoice = new WebApp1.Models.Invoice();
+}
+
+<div class="modal" id="CreateInvoiceModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <i class="bi bi-search"></i>
+                        Thêm hóa đơn mới
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="invoiceId">Mã hóa đơn</label>
+                        <input class="form-control" type="text" id="invoiceId" name="invoiceId" placeholder="Nhập mã hóa đơn..." />
+                    </div>
+                    <div class="form-group">
+                        <label for="invoiceDate">Ngày lập phiếu</label>
+                        <input class="form-control" type='datetime' id="invoiceDate" name="invoiceDate" placeholder="Nhập ngày..." />
+                    </div>
+                    <div class="form-group">
+                        <label for="customerName">Khách hàng</label>
+                        <select id="customerId" class="form-control" asp-items="@(ViewData["CustomerId"] as SelectList)"></select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnAdd" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Thêm
+                    </button>
+                    <button type="button" id="btnAddMore" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> Nhập tiếp
+                    </button>
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $("#btnAdd").click(function() {
+        var json = {
+            invoiceId: $("#invoiceId").val(),
+            invoiceDate: $("#invoiceDate").val(),
+            customerId: $("#customerId").val(),
+        };
+        $.ajax({
+            url: "/Invoices/Create",
+            type: "POST",
+            data: json,
+            success: function (response)
+            {
+                if (response)
+                {
+                    alert("Thêm hóa đơn mới thành công" + response);
+                    $("#invoiceId").val("");
+                    $("#invoiceDate").val("");
+                    $("#customerId").val("");
+                    $("#CreateInvoiceModal").modal("hide");
+                    window.location.href = "/Invoices"
+                }
+                else {
+                    alert("Số liệu không hợp lệ");
+                }
+            },
+            error: function (error)
+            {
+                alert("Lỗi khi thêm hóa đơn: " + error);
+            }
+        })
+    })
+    $("#btnAddMore").click(function()
+    {
+        //alert("We");
+        var json = {
+            invoiceId: $("#invoiceId").val(),
+            invoiceDate: $("#invoiceDate").val(),
+            customerId: $("#customerId").val(),
+        };
+        $.ajax({
+            url: "/Invoices/CreateNew",
+            type: "POST",
+            data: json,
+            success: function (response)
+            {
+                if (response)
+                {
+                    alert("Thêm hóa đơn mới thành công" + response);
+                    $("#invoiceId").val("");
+                    $("#invoiceDate").val("");
+                    $("#customerId").val("");
+                }
+                else {
+                    alert("Số liệu không hợp lệ");
+                }
+            },
+            error: function (error)
+            {
+                alert("Lỗi khi thêm hóa đơn: " + error);
+            }
+        })
+    })
+</script>

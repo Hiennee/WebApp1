@@ -1,0 +1,91 @@
+﻿@model IEnumerable<WebApp1.Models.Invoice>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Danh mục hóa đơn</h1>
+
+<p>
+    <a data-bs-toggle="modal" data-bs-target="#CreateInvoiceModal" title="Thêm HĐ mới">Thêm hóa đơn mới</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Số hóa đơn
+            </th>
+            <th>
+                Ngày lập
+            </th>
+            <th>
+                Khách hàng
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @item.InvoiceId
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InvoiceDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Customer.CustomerId)
+            </td>
+            <td>
+                <button class="btn btn-primary btnEdit"
+                    data-id="@item.InvoiceId"
+                    data-date="@item.InvoiceDate"
+                    data-customerName="@item.Customer.CustomerName"
+                    data-bs-toggle="modal"
+                    data-bs-target="#EditInvoiceModal">
+                    Sửa
+                </button> |
+                <a asp-action="Details" asp-route-id="@item.InvoiceId">Chi tiết</a> |
+                <button class="btn btn-primary btnDelete"
+                        data-id="@item.InvoiceId"
+                        data-date="@item.InvoiceDate"
+                        data-customerName="@item.Customer.CustomerName"
+                        data-asd="@item.Customer.CustomerId"
+                        data-bs-toggle="modal"
+                        data-bs-target="#DeleteInvoiceModal">
+                    Xóa
+                </button>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(".btnEdit").click(function() {
+        //alert("OK");
+        var invoiceId = $(this).data("id");
+        var invoiceDate = $(this).data("date");
+        var customerName = $(this).data("customerName");
+        // Populate modal fields
+        $("#editInvoiceId").val(invoiceId);
+        $("#editInvoiceDate").val(invoiceDate);
+        $("#editCustomerName").val(customerName);
+    });
+    $(".btnDelete").click(function() {
+        //alert("OK");
+        var invoiceId = $(this).data("id");
+        var invoiceDate = $(this).data("date");
+        var customerName = $(this).data("customerName");
+        var asd = $(this).data("asd");
+        console.log(customerName, asd);
+        $("#deleteInvoiceId").val(invoiceId);
+        $("#deleteInvoiceDate").val(invoiceDate);
+        $("#deleteCustomerName").val(customerName);
+    })
+</script>
+
+ @await Html.PartialAsync("_CreateInvoiceModal", ViewData)
+ @await Html.PartialAsync("_EditInvoiceModal", ViewData)
+ @await Html.PartialAsync("_DeleteInvoiceModal", ViewData)

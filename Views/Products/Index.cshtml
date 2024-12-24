@@ -1,0 +1,83 @@
+﻿@model IEnumerable<WebApp1.Models.Product>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Danh mục sản phẩm</h1>
+
+<p>
+    <a data-bs-toggle="modal" data-bs-target="#CreateProducteModal" title="Thêm SP mới">Thêm sản phẩm mới</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Tên sản phẩm
+            </th>
+            <th>
+                Giá
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                <button class="btn btn-primary btnEdit"
+                        data-id="@item.ProductId"
+                        data-name="@item.ProductName"
+                        data-price="@item.Price"
+                        data-bs-toggle="modal"
+                        data-bs-target="#EditProductModal">
+                    Sửa
+                </button> |
+                <a asp-action="Details" asp-route-id="@item.ProductId">Chi tiết</a> |
+                <button class="btn btn-primary btnDelete"
+                        data-id="@item.ProductId"
+                        data-name="@item.ProductName"
+                        data-price="@item.Price"
+                        data-bs-toggle="modal"
+                        data-bs-target="#DeleteProductModal">
+                    Xóa
+                </button>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(".btnEdit").click(function () {
+        //alert("OK");
+        var productId = $(this).data("id");
+        var productName = $(this).data("name");
+        var price = $(this).data("price");
+        // Populate modal fields
+        $("#editProductId").val(productId);
+        $("#editProductName").val(productName);
+        $("#editPrice").val(price);
+    });
+    $(".btnDelete").click(function () {
+        //alert("OK");
+        //console.log("???");
+        var productId = $(this).data("id");
+        var productName = $(this).data("name");
+        var price = $(this).data("price");
+        $("#deleteProductId").val(productId);
+        $("#deleteProductName").val(productName);
+        $("#deletePrice").val(price);
+    })
+</script>
+
+@await Html.PartialAsync("_CreateProductModal")
+@await Html.PartialAsync("_DeleteProductModal")
+@await Html.PartialAsync("_EditProductModal")

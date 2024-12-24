@@ -1,0 +1,51 @@
+﻿@model WebApp1.Models.InvoiceDetail
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Xóa</h1>
+
+<h3>Bạn có chắc muốn xóa mặt hàng @Model.Product.ProductName khỏi hóa đơn @Model.InvoiceId?</h3>
+<div>
+    <h4>Sản phẩm @Model.ProductId</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Mã SP
+        </dt>
+        <dd class = "col-sm-10">
+            @Model.ProductId
+        </dd>
+        <dt class = "col-sm-2">
+            Tên SP
+        </dt>
+        <dd class = "col-sm-10">
+            @Model.Product.ProductName
+        </dd>
+        <dt class="col-sm-2">
+            Đơn giá
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Product.Price
+        </dd>
+        <dt class="col-sm-2">
+            Số lượng
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Quantity
+        </dd>
+        <dt class="col-sm-2">
+            Thành tiền
+        </dt>
+        <dd class="col-sm-10">
+            @Model.TotalPrice
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="InvoiceDetailId" />
+        <input type="submit" value="Xóa" class="btn btn-danger" /> |
+        <a asp-controller="Invoices" asp-action="Details" asp-route-id="@Model.InvoiceId">Quay về</a>
+    </form>
+</div>

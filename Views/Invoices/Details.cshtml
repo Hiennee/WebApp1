@@ -1,0 +1,116 @@
+﻿@model WebApp1.Models.Invoice
+
+@{
+    ViewData["Title"] = "Details";
+    double total = 0;
+}
+
+<h1>Chi tiết hóa đơn</h1>
+
+<div>
+    <h4>@Model.InvoiceId</h4>
+    <input type="hidden" id="headInvoiceId" value="@Model.InvoiceId" />
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Ngày lập
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.InvoiceDate)
+        </dd>
+        <dt class = "col-sm-2">
+            Mã KH
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Customer.CustomerId)
+        </dd>
+        <dt class="col-sm-2">
+            Tên KH
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Customer.CustomerName)
+        </dd>
+    </dl>
+    <a id="addInvoiceDetail" data-bs-toggle="modal" data-bs-target="#CreateInvoiceDetailModal" title="Thêm sản phẩm mới">Thêm sản phẩm vào hóa đơn</a>
+</div>
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Mã SP
+                </th>
+                <th>
+                    Tên SP
+                </th>
+                <th>
+                    Đơn giá
+                </th>
+                <th>
+                    Số lượng
+                </th>
+                <th>
+                    Thành tiền
+                </th>
+                <th>
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (WebApp1.Models.InvoiceDetail invoiceDetail in Model.InvoiceDetails)
+        {
+            total += invoiceDetail.TotalPrice;
+            <tr>
+                <td>
+                    @invoiceDetail.Product.ProductId
+                </td>
+                <td>
+                    @invoiceDetail.Product.ProductName
+                </td>
+                <td>
+                    @invoiceDetail.Product.Price
+                </td>
+                <td>
+                    @invoiceDetail.Quantity
+                </td>
+                <td>
+                    @invoiceDetail.TotalPrice
+                </td>
+                <td>
+                    <a asp-controller="InvoiceDetails" asp-action="Edit" asp-route-id="@invoiceDetail.InvoiceDetailId">Sửa</a> |
+                    <a asp-controller="InvoiceDetails" asp-action="Delete" asp-route-id="@invoiceDetail.InvoiceDetailId">Xóa</a>
+                </td>
+            </tr> 
+        }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" style="text-align: right; font-weight: bold">
+                    Tổng cộng:
+                </td>
+                <td>
+                    @total
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.InvoiceId">Sửa</a> |
+    <a asp-action="Index">Quay về</a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#addInvoiceDetail").click(function() {
+            var invoiceId = $("#headInvoiceId").val();
+            console.log(invoiceId);
+            $("#invoiceId").val(invoiceId);
+            
+        })
+    })
+</script>
+
+@await Html.PartialAsync("_CreateInvoiceDetailModal", ViewData)

@@ -1,0 +1,83 @@
+﻿@model IEnumerable<WebApp1.Models.Customer>
+@{
+    var customer = new WebApp1.Models.Customer();
+}
+
+<div class="modal" id="CreateCustomerModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" asp-action="Create" asp-controller="Customers">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <i class="bi bi-search"></i>
+                        Thêm khách hàng mới
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="@customer.CustomerId">Mã khách hàng</label>
+                        <input asp-for="@customer.CustomerId" class="form-control" type="text" id="customerId" name="customerId" placeholder="Nhập mã khách hàng..." />
+                        <span asp-validation-for="@customer.CustomerId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@customer.CustomerName">Tên khách hàng</label>
+                        <input asp-for="@customer.CustomerName" class="form-control" type="text" id="customerName" name="customerName" placeholder="Nhập tên khách hàng..." />
+                        <span asp-validation-for="@customer.CustomerName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@customer.Phone">Số điện thoại</label>
+                        <input asp-for="@customer.Phone" class="form-control" type="number" id="phone" name="phone" placeholder="Nhập SĐT khách hàng..." />
+                        <span asp-validation-for="@customer.Phone" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Thêm
+                    </button>
+                    <button type="button" id="btnAddMore" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> Nhập tiếp
+                    </button>
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $("#btnAddMore").click(function()
+    {
+        //alert("We");
+        var json = {
+            customerId: $("#customerId").val(),
+            customerName: $("#customerName").val(),
+            phone: $("#phone").val(),
+        };
+        $.ajax({
+            url: "/Customers/CreateNew",
+            type: "POST",
+            data: json,
+            success: function (response)
+            {
+                if (response)
+                {
+                    alert("Thêm khách hàng mới thành công" + response);
+                    $("#customerId").val("");
+                    $("#customerName").val("");
+                    $("#phone").val("");
+                }
+                else {
+                    alert("Số liệu không hợp lệ");
+                }
+            },
+            error: function (error)
+            {
+                alert("Lỗi khi thêm khách hàng: " + error);
+            }
+        })
+    })
+</script>

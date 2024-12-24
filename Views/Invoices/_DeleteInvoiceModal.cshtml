@@ -1,0 +1,66 @@
+﻿<div class="modal" id="DeleteInvoiceModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <i class="bi bi-search"></i>
+                        Xóa khách hàng
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="deleteInvoiceId">Mã hóa đơn</label>
+                        <input class="form-control" type="text" id="deleteInvoiceId" name="invoiceId" readonly/>
+                    </div>
+                    <div class="form-group">
+                        <label for="deleteCustomerName">Ngày lập hóa đơn</label>
+                        <input class="form-control" type="text" id="deleteInvoiceDate" name="invoiceDate" readonly/>
+                    </div>
+                @*     <div class="form-group">
+                        <label for="deletePhone">Tên khách hàng</label>
+                        <input class="form-control" type="text" id="deleteCustomerName" name="customerName" readonly/>
+                    </div> *@
+                </div>
+                <div class="modal-footer">
+                    <button id="btnSubmitDelete" type="button" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Xóa
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $("#btnSubmitDelete").click(function() {
+        var json = {
+            id: $("#deleteInvoiceId").val(),
+        };
+        console.log(json);
+        $.ajax({
+            url: `/Invoices/Delete`,
+            type: "POST",
+            data: json,
+            success: function (response) {
+                console.log(response);
+                if (response) {
+                    alert("Xóa hóa đơn thành công");
+                    $("#DeleteInvoiceModal").modal("hide");
+                    window.location.href = "/Invoices/";
+                    return;
+                }          
+                alert("Không thể xóa hóa đơn đã có sản phẩm!");
+                $("#DeleteInvoiceModal").modal("hide");
+            },
+            error: function (error) {
+                console.log("???", error);
+                alert(error);
+            }
+        })
+    })
+</script>

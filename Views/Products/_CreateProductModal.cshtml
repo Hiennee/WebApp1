@@ -1,0 +1,75 @@
+﻿<div class="modal" id="CreateProductModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" asp-action="Create" asp-controller="Customers">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <i class="bi bi-search"></i>
+                        Thêm sản phẩm mới
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="productId">Mã sản phẩm</label>
+                        <input class="form-control" type="text" id="productId" name="productId" placeholder="Nhập mã sản phẩm..." />
+                    </div>
+                    <div class="form-group">
+                        <label for="productName">Tên khách hàng</label>
+                        <input class="form-control" type="text" id="productName" name="productName" placeholder="Nhập tên sản phẩm..." />
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Đơn giá</label>
+                        <input class="form-control" type="number" id="price" name="price" placeholder="Nhập đơn giá..." />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Thêm
+                    </button>
+                    <button type="button" id="btnAddMore" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> Nhập tiếp
+                    </button>
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $("#btnAddMore").click(function()
+    {
+        //alert("We");
+        var json = {
+            productId: $("#productId").val(),
+            productName: $("#productName").val(),
+            price: $("#price").val(),
+        };
+        $.ajax({
+            url: "/Products/CreateNew",
+            type: "POST",
+            data: json,
+            success: function (response)
+            {
+                if (response)
+                {
+                    alert("Thêm sản phẩm mới thành công" + response);
+                    $("#productId").val("");
+                    $("#productName").val("");
+                    $("#price").val("");
+                }
+                else {
+                    alert("Số liệu không hợp lệ");
+                }
+            },
+            error: function (error)
+            {
+                alert("Lỗi khi thêm sản phẩm: " + error);
+            }
+        })
+    })
+</script>

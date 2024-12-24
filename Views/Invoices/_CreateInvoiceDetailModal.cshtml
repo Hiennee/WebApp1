@@ -1,0 +1,109 @@
+﻿<div class="modal" id="CreateInvoiceDetailModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-controller="InvoiceDetails" asp-action="Create" method="POST">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <i class="bi bi-search"></i>
+                        Thêm sản phẩm vào hóa đơn
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="invoiceId">Mã hóa đơn</label>
+                        <input id="invoiceId" class="form-control" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label for="productId">Sản phẩm</label>
+                        <select id="productId" class="form-control" asp-items="@(ViewData["ProductList"] as SelectList)"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Số lượng</label>
+                        <input class="form-control" type="number" id="quantity" name="quantity" placeholder="Nhập số lượng sản phẩm..." />
+                    </div>
+                    <div class="form-group">
+                        <label for="totalPrice">Số lượng</label>
+                        <input class="form-control" type="number" id="totalPrice" name="totalPrice" readonly />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnAdd" type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Thêm
+                    </button>
+                    <button type="button" id="btnAddMore" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> Nhập tiếp
+                    </button>
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $("#btnAddMore").click(function () {
+    var json = {
+        invoiceId: $("#invoiceId").val(),
+        productId: $("#productId").val(),
+        quantity: $("#quantity").val(),
+        totalPrice: $("#totalPrice").val(),
+    };
+
+        $.ajax({
+            url: "/InvoiceDetails/CreateNew",
+            type: "POST",
+            data: json,
+            success: function (response) {
+                if (response) {
+                    alert("Thêm sản phẩm vào hóa đơn thành công " + response);
+                    // Clear input fields
+                    $("#invoiceId").val("");
+                    $("#productId").val("");
+                    $("#quantity").val("");
+                    $("#totalPrice").val("");
+                    window.location.href = `/Invoices/Details/${invoiceId}`
+                } else {
+                    alert("Số liệu không hợp lệ");
+                }
+            },
+            error: function (error) {
+                alert("Lỗi khi thêm sản phẩm vào hóa đơn: " + error);
+            },
+        });
+    });
+
+    function calculateTotalPrice() {
+        var productId = $("#productId").val();
+        var quantity = $("#quantity").val();
+
+        console.log("calc");
+
+        if (productId && quantity > 0) {
+            $.ajax({
+                url: `/Products/GetProductPrice/${productId}`,
+                type: "GET",
+                success: function (response) {
+                    var price = response;
+                    var total = price * quantity;
+                    $("#totalPrice").val(total.toFixed(2));
+                },
+                error: function () {
+                    alert("Failed to fetch product price.");
+                },
+            });
+        } else {
+            $("#totalPrice").val("");
+        }
+    }
+
+    // Attach event handlers
+    $("#productId, #quantity").on("change", calculateTotalPrice);
+    $("#quantity").on("input", calculateTotalPrice);
+    $("#btnAdd, #btnAddMore").on("click", calculateTotalPrice);
+
+</script>
+

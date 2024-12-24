@@ -1,0 +1,87 @@
+﻿@model IEnumerable<WebApp1.Models.Customer>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Danh mục khách hàng</h1>
+
+<p>
+    <a data-bs-toggle="modal" data-bs-target="#CreateCustomerModal" title="Thêm KH mới">Thêm khách hàng mới</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Tên khách hàng
+            </th>
+            <th>
+                Số điện thoại
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone)
+            </td>
+            <td>
+                <button class="btn btn-primary btnEdit"
+                        data-id="@item.CustomerId"
+                        data-name="@item.CustomerName"
+                        data-phone="@item.Phone"
+                        data-bs-toggle="modal"
+                        data-bs-target="#EditCustomerModal">
+                    Sửa
+                </button> |
+                <a asp-action="Details" asp-route-id="@item.CustomerId">Chi tiết</a> |
+                <button class="btn btn-primary btnDelete"
+                        data-id="@item.CustomerId"
+                        data-name="@item.CustomerName"
+                        data-phone="@item.Phone"
+                        data-bs-toggle="modal"
+                        data-bs-target="#DeleteCustomerModal">
+                    Xóa
+                </button>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(".btnEdit").click(function() {
+        //alert("OK");
+        var customerId = $(this).data("id");
+        var customerName = $(this).data("name");
+        var phone = $(this).data("phone");
+        console.log(customerId, customerName, phone);
+        // Populate modal fields
+        $("#editCustomerId").val(customerId);
+        $("#editCustomerName").val(customerName);
+        $("#editPhone").val(phone);
+    });
+    $(".btnDelete").click(function() {
+        //alert("OK");
+        var customerId = $(this).data("id");
+        var customerName = $(this).data("name");
+        var phone = $(this).data("phone");
+
+        // Populate modal fields
+        $("#deleteCustomerId").val(customerId);
+        $("#deleteCustomerName").val(customerName);
+        $("#deletePhone").val(phone);
+    })
+</script>
+
+@await Html.PartialAsync("_CreateCustomerModal")
+@await Html.PartialAsync("_EditCustomerModal")
+@await Html.PartialAsync("_DeleteCustomerModal")
+
+

@@ -1,0 +1,60 @@
+﻿<div class="modal" id="EditProductModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <i class="bi bi-search"></i>
+                        Chỉnh sửa sản phẩm
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="editProductId">Mã sản phẩm</label>
+                        <input class="form-control" type="text" id="editProductId" name="productId" readonly/>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductName">Tên sản phẩm</label>
+                        <input class="form-control" type="text" id="editProductName" name="productName" />
+                    </div>
+                    <div class="form-group">
+                        <label for="editPhone">Đơn giá</label>
+                        <input class="form-control" type="number" id="editPrice" name="price" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnSubmitEdit" type="button" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Sửa
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $("#btnSubmitEdit").click(function() {
+        var json = {
+            productId: $("#editProductId").val(),
+            productName: $("#editProductName").val(),
+            price: $("#editPrice").val()
+        };
+        $.ajax({
+            url: "/Products/Edit",
+            type: "POST",
+            data: json,
+            success: function (response) {
+                alert("Cập nhật sản phẩm thành công");
+                $("#EditProductModal").modal("hide");
+                window.location.href = "/Products/"
+            },
+            error: function (error) {
+                alert(error);
+            }
+        })
+    })
+</script>

@@ -1,0 +1,65 @@
+﻿<div class="modal" id="DeleteProductModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <i class="bi bi-search"></i>
+                        Bạn có chắc muốn xóa sản phẩm này?
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="deleteProductId">Mã sản phẩm</label>
+                        <input class="form-control" type="text" id="deleteProductId" name="deleteProductId" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label for="deleteProductName">Tên sản phẩm</label>
+                        <input class="form-control" type="text" id="deleteProductName" name="deleteProductName" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label for="deletePhone">Đơn giá</label>
+                        <input class="form-control" type="number" id="deletePrice" name="deletePhone" readonly />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnSubmitDelete" type="button" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Xóa
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $("#btnSubmitDelete").click(function() {
+        var json = {
+            id: $("#deleteProductId").val(),
+        };
+        console.log(json);
+        $.ajax({
+            url: `/Products/Delete`,
+            type: "POST",
+            data: json,
+            success: function (response) {
+                if (response) {
+                    alert("Xóa sản phẩm thành công");
+                    $("#DeleteProductModal").modal("hide");
+                    window.location.href = "/Products/";
+                    return;
+                }          
+                alert("Không thể xóa sản phẩm có hóa đơn!");
+                $("#DeleteProductModal").modal("hide");
+            },
+            error: function (error) {
+                console.log(error)
+                alert(error);
+            }
+        })
+    })
+</script>

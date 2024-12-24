@@ -1,0 +1,67 @@
+﻿<div class="modal" id="EditInvoiceModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <i class="bi bi-search"></i>
+                        Chỉnh sửa hóa đơn
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="invoiceId">Mã hóa đơn</label>
+                        <input class="form-control" type="text" id="editInvoiceId" name="invoiceId" raedonly />
+                    </div>
+                    <div class="form-group">
+                        <label for="invoiceDate">Ngày lập phiếu</label>
+                        <input class="form-control" type='datetime' id="editInvoiceDate" name="invoiceDate" />
+                    </div>
+                    <div class="form-group">
+                        <label for="customerName">Khách hàng</label>
+                        <select id="editCustomerId" class="form-control" asp-items="@(ViewData["CustomerId"] as SelectList)"></select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnSubmitEdit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Lưu
+                    </button>
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $("#btnSubmitEdit").click(function() {
+        var json = {
+            invoiceId: $("#editInvoiceId").val(),
+            invoiceDate: $("#editInvoiceDate").val(),
+            customerId: $("#editCustomerId").val()
+        };
+        $.ajax({
+            url: "/Invoices/Edit",
+            type: "POST",
+            data: json,
+            success: function (response) {
+                if (response) {
+                    alert("Cập nhật hóa đơn thành công");
+                    $("#EditInvoiceModal").modal("hide");
+                    window.location.href = "/Invoices/"
+                }
+                else {
+                    alert("Cập nhật hóa đơn thất bại");
+                }
+            },
+            error: function (error) {
+                console.log(error)
+                alert(error);
+            }
+        })
+    })
+</script>
