@@ -1,7 +1,7 @@
 ﻿<div class="modal" id="CreateProductModal">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="POST" asp-action="Create" asp-controller="Customers">
+            <form method="POST" asp-action="Create" asp-controller="Products">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="modal-header">
                     <h4 class="modal-title">
@@ -32,7 +32,7 @@
                         <i class="bi bi-plus-circle"></i> Nhập tiếp
                     </button>
 
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-secondary btnClose" data-bs-dismiss="modal">Đóng</button>
                 </div>
             </form>
         </div>
@@ -57,7 +57,7 @@
             {
                 if (response)
                 {
-                    alert("Thêm sản phẩm mới thành công" + response);
+                    alert("Thêm sản phẩm mới thành công");
                     $("#productId").val("");
                     $("#productName").val("");
                     $("#price").val("");
@@ -71,5 +71,8 @@
                 alert("Lỗi khi thêm sản phẩm: " + error);
             }
         })
+    })
+    $(".btnClose").click(function () {
+        window.location.href = "/Products";
     })
 </script>

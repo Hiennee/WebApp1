@@ -6,22 +6,22 @@
                 <div class="modal-header">
                     <h4 class="modal-title">
                         <i class="bi bi-search"></i>
-                        Xóa khách hàng
+                        Xóa hóa đơn
                     </h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="deleteInvoiceId">Mã hóa đơn</label>
-                        <input class="form-control" type="text" id="deleteInvoiceId" name="invoiceId" readonly/>
+                        <input class="form-control" type="text" id="deleteInvoiceId" name="invoiceId" readonly />
                     </div>
                     <div class="form-group">
                         <label for="deleteCustomerName">Ngày lập hóa đơn</label>
-                        <input class="form-control" type="text" id="deleteInvoiceDate" name="invoiceDate" readonly/>
+                        <input class="form-control" type="text" id="deleteInvoiceDate" name="invoiceDate" readonly />
                     </div>
-                @*     <div class="form-group">
-                        <label for="deletePhone">Tên khách hàng</label>
-                        <input class="form-control" type="text" id="deleteCustomerName" name="customerName" readonly/>
+                    @*     <div class="form-group">
+                    <label for="deletePhone">Tên khách hàng</label>
+                    <input class="form-control" type="text" id="deleteCustomerName" name="customerName" readonly/>
                     </div> *@
                 </div>
                 <div class="modal-footer">
@@ -37,7 +37,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $("#btnSubmitDelete").click(function() {
+    $("#btnSubmitDelete").click(function  () {
         var json = {
             id: $("#deleteInvoiceId").val(),
         };
@@ -53,7 +53,7 @@
                     $("#DeleteInvoiceModal").modal("hide");
                     window.location.href = "/Invoices/";
                     return;
-                }          
+                }
                 alert("Không thể xóa hóa đơn đã có sản phẩm!");
                 $("#DeleteInvoiceModal").modal("hide");
             },
@@ -64,3 +64,9 @@
         })
     })
 </script>
+
+<style>
+    .modal-backdrop.fade.show {
+        z-index: inherit;
+    }
+</style>

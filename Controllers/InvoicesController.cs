@@ -113,6 +113,7 @@ namespace WebApp1.Controllers
             {
                 try
                 {
+                    invoice.InvoiceDetails = new List<InvoiceDetail>();
                     _context.Update(invoice);
                     await _context.SaveChangesAsync();
                 }
@@ -174,6 +175,22 @@ namespace WebApp1.Controllers
         public bool InvoiceExists(string id)
         {
             return _context.Invoices.Any(e => e.InvoiceId == id);
+        }
+        [HttpGet("[controller]/getInvDel/{id}")]
+        public async Task<List<InvoiceDetail>> GetInvoiceDetailsOfInvoice(string id)
+        {
+            return await _context.InvoiceDetails.Where(idl => idl.InvoiceId.Equals(id))
+                                                .Include(idl => idl.Product)
+                                                .Select(idl => new InvoiceDetail
+                                                {
+                                                    InvoiceDetailId = idl.InvoiceDetailId,
+                                                    InvoiceId = idl.InvoiceId,
+                                                    ProductId = idl.ProductId,
+                                                    Quantity = idl.Quantity,
+                                                    TotalPrice = idl.TotalPrice,
+                                                    Product = idl.Product,
+                                                })
+                                                .ToListAsync();
         }
     }
 }

@@ -66,7 +66,7 @@ namespace WebApp1.Controllers
             return RedirectToAction(nameof(Index));
         }
         [HttpPost]
-        public bool CreateNew([Bind("CustomerId,CustomerName,Phone")] Customer customer)
+        public bool CreateNew([Bind("CustomerId, CustomerName, Phone")] Customer customer)
         {
             if (ModelState.IsValid)
             {

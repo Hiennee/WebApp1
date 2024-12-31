@@ -34,7 +34,7 @@
                 @Html.DisplayFor(modelItem => item.InvoiceDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Customer.CustomerId)
+                @Html.DisplayFor(modelItem => item.Customer.CustomerId) | @Html.DisplayFor(modelItem => item.Customer.CustomerName)
             </td>
             <td>
                 <button class="btn btn-primary btnEdit"
@@ -63,7 +63,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(".btnEdit").click(function() {
+    $(".btnEdit").click(function () {
         //alert("OK");
         var invoiceId = $(this).data("id");
         var invoiceDate = $(this).data("date");
@@ -73,7 +73,7 @@
         $("#editInvoiceDate").val(invoiceDate);
         $("#editCustomerName").val(customerName);
     });
-    $(".btnDelete").click(function() {
+    $(".btnDelete").click(function () {
         //alert("OK");
         var invoiceId = $(this).data("id");
         var invoiceDate = $(this).data("date");
@@ -86,6 +86,8 @@
     })
 </script>
 
- @await Html.PartialAsync("_CreateInvoiceModal", ViewData)
- @await Html.PartialAsync("_EditInvoiceModal", ViewData)
- @await Html.PartialAsync("_DeleteInvoiceModal", ViewData)
+
+
+@await Html.PartialAsync("_CreateInvoiceModal", ViewData)
+@await Html.PartialAsync("_EditInvoiceModal", ViewData)
+@await Html.PartialAsync("_DeleteInvoiceModal", ViewData)

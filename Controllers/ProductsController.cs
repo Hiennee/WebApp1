@@ -68,7 +68,7 @@ namespace WebApp1.Controllers
             }
             return View(product);
         }
-        public bool CreateNew([Bind("productId,productName,price")] Product product)
+        public bool CreateNew([Bind("ProductId, ProductName, Price")] Product product)
         {
             if (ModelState.IsValid)
             {
@@ -164,6 +164,11 @@ namespace WebApp1.Controllers
         public double GetProductPrice(string id)
         {
             return _context.Products.Find(id).Price;
+        }
+        [HttpGet]
+        public async Task<List<Product>> GetProducts()
+        {
+            return await _context.Products.ToListAsync();
         }
     }
 }

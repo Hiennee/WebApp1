@@ -24,8 +24,9 @@
                         <select id="editCustomerId" class="form-control" asp-items="@(ViewData["CustomerId"] as SelectList)"></select>
                     </div>
                 </div>
+                <div id="editProductsGrid"></div>
                 <div class="modal-footer">
-                    <button id="btnSubmitEdit" class="btn btn-primary">
+                    <button type="button" id="btnSubmitEdit" class="btn btn-primary">
                         <i class="bi bi-search"></i> Lưu
                     </button>
 
@@ -38,21 +39,190 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $("#btnSubmitEdit").click(function() {
+    var editGrid;
+    var invoiceId;
+    var listInvoiceDetail = [];
+    var listUpdatedInvoiceDetail = [];
+    var products = [];
+    var displayData = [];
+    $(".btnEdit").click(function () {
+        invoiceId = $("#editInvoiceId").val();
+        $.ajax({
+            url: "/Products/GetProducts",
+            type: "GET",
+            success: function (response) {
+                //console.log("Ayo" + response)
+                products = response;
+            },
+            error: function (e) {
+                console.log("no" + e);
+            }
+        })
+        if (invoiceId) {
+            $.ajax({
+                url: `/Invoices/getInvDel/${invoiceId}`,
+                type: "GET",
+                success: function (response) {
+                    console.log(response);
+                    listInvoiceDetail = response;
+                    listInvoiceDetail.forEach(function(idl) {
+                        displayData.push({
+                            productId: idl.product.productId,
+                            productName: idl.product.productName,
+                            quantity: idl.quantity,
+                            price: idl.product.price,
+                            totalPrice: idl.totalPrice,
+                        })
+                    });
+                    console.log("data: ",displayData);
+                    editGrid.dataSource.data(displayData);
+                },
+                error: function (e) {
+                    console.log("hello")
+                    console.log(e);
+                    alert(e);
+                }
+            })
+        }
+        editGrid = $("#editProductsGrid").kendoGrid({
+            dataSource: {
+                data: displayData,
+                schema: {
+                    model: {
+                        fields: {
+                            productId: { type: "string" },
+                            productName: { type: "string" },
+                            quantity: { type: "number", validation: { min: 1 } },
+                            price: { type: "number" },
+                            totalPrice: { type: "number" },
+                        }
+                    }
+                }
+            },
+            editable: true,
+            scrollable: true,
+            columns: [
+                {
+                    field: "productId",
+                    title: "Mã sản phẩm",
+                    editable: true,
+                    template: "#= productId #"
+                },
+                {
+                    field: "productName",
+                    title: "Tên sản phẩm",
+                    editable: true,
+                    template: "#= productName #"
+                },
+                {
+                    field: "quantity",
+                    title: "Số lượng",
+                    editable: false,
+                    editor: quantityInput,
+                    template: "#= quantity #"
+                },
+                {
+                    field: "price",
+                    title: "Đơn giá",
+                    editable: true,
+                    template: "#= price #"
+                },
+                {
+                    field: "totalPrice",
+                    title: "Thành tiền",
+                    editable: true,
+                    template: "#= totalPrice #"
+                },
+            ],
+        }).data("kendoGrid");
+
+        function productSelectList(container, options) {
+            console.log(container, options);
+            $('<select data-bind="value:' + options.field + '"></select>')
+            .appendTo(container)
+            .kendoDropDownList({
+                dataSource: products,
+                dataTextField: "productName",
+                dataValueField: "productId",
+                optionLabel: "Chọn sản phẩm",
+                change: function () {
+                    var selectedProduct = this.dataItem();
+                    console.log("this là:", this);
+                    console.log("dataItem:", selectedProduct);
+                    options.model.productName = selectedProduct ? selectedProduct.productName : "";
+                    options.model.productId = selectedProduct ? selectedProduct.productId : null;
+                    options.model.price = selectedProduct ? selectedProduct.price : 0;
+                    console.log("model", options.model)
+                    editGrid.refresh();
+                    //options.model.totalPrice = selectedProduct? calculateTotalPrice() : 0;
+                }
+            });
+        }
+        function quantityInput(container, options) {
+            $('<input type="number" data-bind="value:' + options.field + '" class="k-input"/>')
+            .appendTo(container)
+            .attr("min", 1); // Minimum value for quantity
+        }
+        if (editGrid) {
+            editGrid.tbody.on("click", function () { console.log("ê") })
+            editGrid.tbody.on("change", "td", function (e) {
+                //console.log("asdasdasdasd");
+                var rowIndex = $(e.target).closest("tr").index();
+                var row = editGrid.dataSource.view()[rowIndex];
+                var price = row.price;
+                var quantity = row.quantity;
+                editGrid.dataSource.view()[rowIndex].totalPrice = price * quantity;
+                editGrid.refresh();
+            })
+        }
+    })
+    
+    $("#btnSubmitEdit").click(function () {
         var json = {
-            invoiceId: $("#editInvoiceId").val(),
+            invoiceId,
             invoiceDate: $("#editInvoiceDate").val(),
-            customerId: $("#editCustomerId").val()
+            customerId: $("#editCustomerId").val(),
         };
+        listUpdatedInvoiceDetail = editGrid.dataSource.view().map(function(d) {
+            console.log(d);
+            return {
+                InvoiceId: invoiceId,
+                ProductId: d.productId,
+                Quantity: d.quantity,
+                TotalPrice: d.totalPrice,
+            }
+        });
         $.ajax({
             url: "/Invoices/Edit",
             type: "POST",
             data: json,
             success: function (response) {
                 if (response) {
-                    alert("Cập nhật hóa đơn thành công");
-                    $("#EditInvoiceModal").modal("hide");
-                    window.location.href = "/Invoices/"
+                    console.log("cập nhật invoice ok");
+                    listUpdatedInvoiceDetail.forEach(function (idl) {
+                        console.log("idl: ", idl)
+                        // var invoiceDetail = {
+                        //     InvoiceId,
+                        //     ProductId: idl.ProductId,
+                        //     Quantity: idl.Quantity,
+                        //     TotalPrice: idl.TotalPrice,
+                        //};
+                        $.ajax({
+                            url: "/InvoiceDetails/Create",
+                            type: "POST",
+                            data: idl,
+                            success: function (response) {
+                                alert("Chỉnh sửa hóa đơn thành công");
+                            },
+                            error: function (error) {
+                                alert(error);
+                                console.log(error);
+                            }
+                        })
+                        $("#EditInvoiceModal").modal("hide");
+                        window.location.href = "/Invoices/"
+                    })
+                    
                 }
                 else {
                     alert("Cập nhật hóa đơn thất bại");
@@ -65,3 +235,10 @@
         })
     })
 </script>
+
+<style>
+    #EditInvoiceModal .modal-dialog {
+        max-width: 80%; /* Increase this percentage as needed */
+        width: auto;
+    }
+</style>

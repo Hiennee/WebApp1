@@ -20,6 +20,7 @@
                         <label asp-for="@customer.CustomerId">Mã khách hàng</label>
                         <input asp-for="@customer.CustomerId" class="form-control" type="text" id="customerId" name="customerId" placeholder="Nhập mã khách hàng..." />
                         <span asp-validation-for="@customer.CustomerId" class="text-danger"></span>
+                        <span id="customerExist" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="@customer.CustomerName">Tên khách hàng</label>
@@ -33,14 +34,14 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary btnAdd">
                         <i class="bi bi-search"></i> Thêm
                     </button>
-                    <button type="button" id="btnAddMore" class="btn btn-success">
+                    <button type="button" id="btnAddMore" class="btn btn-success btnAdd">
                         <i class="bi bi-plus-circle"></i> Nhập tiếp
                     </button>
 
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-secondary btnClose" data-bs-dismiss="modal">Đóng</button>
                 </div>
             </form>
         </div>
@@ -49,6 +50,23 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    $("#customerId").change(function() {
+        console.log(">");
+        var customerId = $("#customerId").val();
+        $.ajax({
+            url: `/Customers/exists/${customerId}`,
+            type: "GET",
+            success: function (response) {
+                if (response) {
+                    $("#customerExist").text("Mã KH đã tồn tại");
+                    $(".btnAdd").prop("disabled", true);
+                    return;
+                }
+                $("#customerExist").text("");
+                $(".btnAdd").prop("disabled", false);
+            }
+        })
+    });
     $("#btnAddMore").click(function()
     {
         //alert("We");
@@ -79,5 +97,8 @@
                 alert("Lỗi khi thêm khách hàng: " + error);
             }
         })
+    })
+    $(".btnClose").click(function () {
+        window.location.href = "/Customers";
     })
 </script>

@@ -31,7 +31,7 @@
             @Html.DisplayFor(model => model.Customer.CustomerName)
         </dd>
     </dl>
-    <a id="addInvoiceDetail" data-bs-toggle="modal" data-bs-target="#CreateInvoiceDetailModal" title="Thêm sản phẩm mới">Thêm sản phẩm vào hóa đơn</a>
+    
 </div>
 <div>
     <table class="table">
@@ -77,10 +77,6 @@
                 <td>
                     @invoiceDetail.TotalPrice
                 </td>
-                <td>
-                    <a asp-controller="InvoiceDetails" asp-action="Edit" asp-route-id="@invoiceDetail.InvoiceDetailId">Sửa</a> |
-                    <a asp-controller="InvoiceDetails" asp-action="Delete" asp-route-id="@invoiceDetail.InvoiceDetailId">Xóa</a>
-                </td>
             </tr> 
         }
         </tbody>
@@ -97,7 +93,6 @@
     </table>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.InvoiceId">Sửa</a> |
     <a asp-action="Index">Quay về</a>
 </div>
 

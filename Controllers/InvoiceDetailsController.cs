@@ -29,7 +29,7 @@ namespace WebApp1.Controllers
         // POST: InvoiceDetails/Create
         [HttpPost]
         
-        public async Task<IActionResult> Create([Bind("invoiceId", "productId", "quantity", "totalPrice")]
+        public async Task<IActionResult> Create([Bind("InvoiceId", "ProductId", "Quantity", "TotalPrice")]
                                                 InvoiceDetail invoiceDetail)
         {
             try
@@ -39,6 +39,7 @@ namespace WebApp1.Controllers
                 if (check != null)
                 {
                     check.Quantity += invoiceDetail.Quantity;
+                    check.TotalPrice = invoiceDetail.TotalPrice;
                     _context.Update(check);
                     await _context.SaveChangesAsync();
                     return RedirectToAction("Details", "Invoices", new { id = invoiceDetail.InvoiceId });
